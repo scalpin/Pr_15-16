@@ -49,6 +49,13 @@ function getCachedData(key, ttlSeconds = 30) {
 // API для получения данных
 app.get('/api/data', (req, res) => {
     const data = getCachedData('api_data');
+    
+    const theme = req.cookies.theme;
+    if (theme === 'dark') {
+        data.source = 'Файловый кэш (тёмная тема)';
+    } else if (theme === 'light') {
+        data.source = 'Файловый кэш (светлая тема)';
+    } 
     res.json(data);
 });
 
@@ -66,4 +73,24 @@ app.listen(3000, () => {
     console.log('Сервер запущен на http://localhost:3000');
     console.log('Кэш хранится в папке:', cacheDir);
 });
-   
+
+
+// Дополнительно
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js') || req.url.endsWith('.css')) {
+        res.set('Cache-Control', 'public, max-age=86400');
+    }
+    next();
+});
+
+// Логирование запросов
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+    next();
+});
+
+// Обработка ошибок
+process.on('uncaughtException', (err) => {
+    console.error('Необработанная ошибка:', err);
+});
+    
