@@ -5,7 +5,7 @@ function loadTheme() {
 
     if (themeCookie) {
         const theme = themeCookie.split('=')[1];
-        document.documentElement.setAttribute('data-theme', theme);
+        document.body.setAttribute('data-theme', theme);
     }
 }
 
@@ -29,6 +29,8 @@ document.getElementById('toggle-theme').addEventListener('click', () => {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
    
     document.body.setAttribute('data-theme', newTheme);
+
+    document.cookie = `theme=${newTheme}; path=/; max-age=31536000`; // 1 год
    
     fetch('/theme', {
         method: 'POST',

@@ -57,7 +57,6 @@ app.post('/theme', (req, res) => {
     const theme = req.body.theme;
         res.cookie('theme', theme, {
         maxAge: 86400000, // 1 день
-        httpOnly: true,
         sameSite: 'strict'
     });
     res.sendStatus(200);
